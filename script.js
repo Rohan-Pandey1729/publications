@@ -1,6 +1,6 @@
 /**
  * Rohan Pandey — Publications site
- * Data from https://rohan-pandey1729.github.io/developerFolio/
+ * Data from https://rohan-pandey1729.github.io/portfolio/
  */
 
 const PUBLISHED = [
@@ -170,7 +170,7 @@ function renderCard(item, type) {
       : "";
 
   const tagsHtml = item.tags
-    .map((t) => `<span class="pub-card__tag ${tagClass(t)}">${escapeHtml(t)}</span>`)
+    .map((t) => `<span class="pub-card__tag ${tagClass(t)}">${escapeHtml(t.toUpperCase())}</span>`)
     .join("");
 
   const el = document.createElement(isPublished ? "li" : "li");

@@ -11,7 +11,7 @@ A focused, interactive site showcasing **published papers** and **in-progress re
 - **Card tilt** — subtle 3D tilt on hover
 - **Staggered entrance** — cards animate in on load
 - **Accessible** — semantic HTML, focus styles, reduced-motion respected
-- **Link back** — to [developerFolio](https://rohan-pandey1729.github.io/developerFolio/)
+- **Link back** — to [portfolio](https://rohan-pandey1729.github.io/portfolio/)
 
 ## Run locally
 
@@ -42,7 +42,7 @@ If the repo is named `publications`, the URL will be `https://<username>.github.
 
 - **arXiv** — `https://arxiv.org/abs/<id>` for published papers
 - **Google Drive** — CAR T-cell poster (UW Population Health Award), Backdoor poster, TD-MPC2 paper
-- **Portfolio** — [developerFolio](https://rohan-pandey1729.github.io/developerFolio/)
+- **Portfolio** — [portfolio](https://rohan-pandey1729.github.io/portfolio/)
 - **Contact** — rpande.1729@gmail.com
 
 To change links or add papers, edit `script.js` (arrays `PUBLISHED` and `IN_PROGRESS`) and re-deploy.
