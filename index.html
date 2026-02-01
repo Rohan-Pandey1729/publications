@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rohan Pandey — Research Publications</title>
+  <meta name="description" content="Research papers and publications by Rohan Pandey — ML, mathematics, and computational biology." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="gradient-orb gradient-orb--1" aria-hidden="true"></div>
+  <div class="gradient-orb gradient-orb--2" aria-hidden="true"></div>
+  <div class="gradient-orb gradient-orb--3" aria-hidden="true"></div>
+
+  <header class="header">
+    <a href="https://rohan-pandey1729.github.io/developerFolio/" class="back-link" aria-label="Full portfolio">Full Portfolio</a>
+    <div class="header__content">
+      <h1 class="hero-title">
+        <span class="hero-title__line">Research</span>
+        <span class="hero-title__line hero-title__line--accent">Publications</span>
+      </h1>
+      <p class="hero-subtitle">Rohan Pandey — ML, mathematics & computational biology</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="controls">
+      <div class="search-wrap">
+        <label for="search" class="visually-hidden">Search publications</label>
+        <input type="search" id="search" class="search-input" placeholder="Search by title or topic…" autocomplete="off" />
+        <span class="search-icon" aria-hidden="true">⌕</span>
+      </div>
+      <div class="filter-wrap">
+        <span class="filter-label">Filter:</span>
+        <div class="filter-chips" role="group" aria-label="Filter by category">
+          <button type="button" class="chip chip--active" data-filter="all">All</button>
+          <button type="button" class="chip" data-filter="published">Published</button>
+          <button type="button" class="chip" data-filter="in-progress">In Progress</button>
+          <button type="button" class="chip" data-filter="posters">Research Posters</button>
+          <button type="button" class="chip" data-filter="math">Math</button>
+          <button type="button" class="chip" data-filter="ml">ML / CS</button>
+          <button type="button" class="chip" data-filter="bio">Biology</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="published">
+      <h2 class="section-title">
+        <span class="section-title__text">Published</span>
+        <span class="section-title__count" id="published-count"></span>
+      </h2>
+      <ul class="card-list" id="published-list"></ul>
+    </section>
+
+    <section class="section" id="in-progress">
+      <h2 class="section-title">
+        <span class="section-title__text">In Progress &amp; Reports</span>
+        <span class="section-title__count" id="inprogress-count"></span>
+      </h2>
+      <ul class="card-list" id="inprogress-list"></ul>
+    </section>
+
+    <section class="section" id="posters">
+      <h2 class="section-title">
+        <span class="section-title__text">Research Posters</span>
+        <span class="section-title__count" id="posters-count"></span>
+      </h2>
+      <ul class="card-list" id="posters-list"></ul>
+    </section>
+
+    <div class="empty-state hidden" id="empty-state">
+      <p>No publications match your search or filter.</p>
+      <button type="button" class="btn-reset" id="reset-filters">Clear filters</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__text">
+      <a href="https://rohan-pandey1729.github.io/developerFolio/">Full Portfolio</a>
+      <span class="footer__dot">·</span>
+      <a href="mailto:rpande.1729@gmail.com">rpande.1729@gmail.com</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
