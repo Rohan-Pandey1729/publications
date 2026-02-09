@@ -5,6 +5,15 @@
 
 const PUBLISHED = [
   {
+    id: "semantic-limits",
+    title: "Semantic Limits of Positive Existential Reasoning in Arithmetic Dynamics",
+    meta: "arXiv:2602.06066 — math.GM (with Madhav Dhiman)",
+    desc: "Studies structural limitations of purely algebraic reasoning in the analysis of arithmetic dynamical systems. Introduces a fragment-relative notion of algebraic refutability for dynamical properties defined by polynomial relations. Using preservation of positive existential formulas under ring homomorphisms, we show that any behavior realizable in a homomorphic extension of Z cannot be refuted by arguments confined to the positive existential fragment of first-order ring theory. Illustrates the framework using the Collatz map.",
+    url: "https://arxiv.org/abs/2602.06066",
+    tags: ["math"],
+    linkLabel: "View on arXiv",
+  },
+  {
     id: "collatz",
     title: "2-Adic Obstructions to Presburger-Definable Characterizations of Collatz Cycles",
     meta: "arXiv:2601.12772 — math.NT, math.DS",

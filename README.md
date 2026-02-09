@@ -4,7 +4,7 @@ A focused, interactive site showcasing **published papers** and **in-progress re
 
 ## Features
 
-- **Published** — 6 papers with arXiv links and short descriptions
+- **Published** — 7 papers with arXiv links and short descriptions
 - **In progress & reports** — RL for polynomials, ThinkSwitch, cancer modeling, backdoor research, TD-MPC2
 - **Search** — by title or topic
 - **Filters** — All / Published / In progress / Math / ML / Biology
