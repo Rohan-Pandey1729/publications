@@ -5,6 +5,15 @@
 
 const PUBLISHED = [
   {
+    id: "beyond-answer-llms",
+    title: "Beyond the Answer: Decoding the Behavior of LLMs as Scientific Reasoners",
+    meta: "ICLR 2026 — P-AGI Workshop",
+    desc: "Uses a Genetic Pareto (GEPA) approach to optimize prompts for scientific reasoning tasks and analyze how prompting shapes reasoning behavior in large language models. Shows that gains in scientific reasoning often come from brittle, model-specific logical heuristics rather than robust, general-purpose reasoning strategies.",
+    url: "https://openreview.net/forum?id=IdYSW0AS4Y&noteId=IdYSW0AS4Y",
+    tags: ["ml"],
+    linkLabel: "View workshop paper",
+  },
+  {
     id: "semantic-limits",
     title: "Semantic Limits of Positive Existential Reasoning in Arithmetic Dynamics",
     meta: "arXiv:2602.06066 — math.GM",
