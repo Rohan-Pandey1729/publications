@@ -91,15 +91,6 @@ const PUBLISHED = [
 
 const IN_PROGRESS = [
   {
-    id: "rl-poly",
-    title: "Reinforcement Learning for Polynomials",
-    meta: "In progress — targeting ICLR/ICML/NeurIPS",
-    desc: "Designed a reinforcement learning framework with PPO and Graph Neural Networks to synthesize efficient arithmetic circuits for polynomials. Achieved ~70% success rate on degree-3 polynomials using curriculum learning and symbolic verification. Currently scaling to higher-degree polynomials and integrating MCTS.",
-    url: null,
-    tags: ["ml", "math"],
-    linkLabel: null,
-  },
-  {
     id: "thinkswitch",
     title: "ThinkSwitch: Context-Distilled Dual-Mode LoRAs",
     meta: "In progress",
