@@ -5,6 +5,17 @@
 
 const PUBLISHED = [
   {
+    id: "circuitbuilder-rsi",
+    title: "CircuitBuilder: From Polynomials to Circuits via Reinforcement Learning",
+    meta: "ICLR 2026 — RSI Workshop",
+    desc: "Formulates arithmetic-circuit synthesis as a single-player game where an RL agent builds circuits for target polynomials under an operation budget. Implements an AlphaZero-style training loop and compares PPO+MCTS vs. SAC, highlighting strengths in scaling and success rates across instances.",
+    url: "https://openreview.net/forum?id=JNsTWIukjQ&referrer=%5BAuthor%20Console%5D(%2Fgroup%3Fid%3DICLR.cc%2F2026%2FWorkshop%2FRSI%2FAuthors%23your-submissions)",
+    linkLabel: "View on OpenReview",
+    url2: "https://arxiv.org/abs/2603.17075",
+    linkLabel2: "View on arXiv",
+    tags: ["ml", "math"],
+  },
+  {
     id: "beyond-answer-llms",
     title: "Beyond the Answer: Decoding the Behavior of LLMs as Scientific Reasoners",
     meta: "ICLR 2026 — P-AGI Workshop",
@@ -182,10 +193,21 @@ function renderCard(item, type) {
   const isPoster = type === "posters";
   const badge = isPublished ? "Published" : isPoster ? "Research Poster" : "In Progress / Report";
   const badgeClass = isPublished ? "pub-card__badge--published" : isPoster ? "pub-card__badge--poster" : "pub-card__badge--in-progress";
-  const linkHtml =
-    item.url && item.linkLabel
-      ? `<span class="pub-card__link-text">${escapeHtml(item.linkLabel)}</span>`
-      : "";
+  const links = [];
+  if (item.url && item.linkLabel) {
+    links.push({ url: item.url, label: item.linkLabel });
+  }
+  if (item.url2 && item.linkLabel2) {
+    links.push({ url: item.url2, label: item.linkLabel2 });
+  }
+  const linksHtml = links.length
+    ? `<div class="pub-card__links">${links
+        .map(
+          (l) =>
+            `<a class="pub-card__link" href="${escapeAttr(l.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(l.label)}</a>`,
+        )
+        .join("")}</div>`
+    : "";
 
   const tagsHtml = item.tags
     .map((t) => `<span class="pub-card__tag ${tagClass(t)}">${escapeHtml(t.toUpperCase())}</span>`)
@@ -198,27 +220,13 @@ function renderCard(item, type) {
     <p class="pub-card__meta">${escapeHtml(item.meta)}</p>
     <p class="pub-card__desc">${escapeHtml(item.desc)}</p>
     <div class="pub-card__tags">${tagsHtml}</div>
-    ${linkHtml}
+    ${linksHtml}
   `;
 
-  const card = item.url
-    ? (() => {
-        const a = document.createElement("a");
-        a.href = item.url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.className = "pub-card";
-        a.setAttribute("data-card", "");
-        a.innerHTML = inner;
-        return a;
-      })()
-    : (() => {
-        const div = document.createElement("div");
-        div.className = "pub-card";
-        div.setAttribute("data-card", "");
-        div.innerHTML = inner;
-        return div;
-      })();
+  const card = document.createElement("div");
+  card.className = "pub-card";
+  card.setAttribute("data-card", "");
+  card.innerHTML = inner;
 
   el.appendChild(card);
   el.dataset.id = item.id;
@@ -231,6 +239,10 @@ function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+function escapeAttr(text) {
+  return String(text).replace(/"/g, "&quot;");
 }
 
 function filterItems(type) {

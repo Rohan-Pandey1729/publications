@@ -329,18 +329,27 @@ body {
 .pub-card__tag--ml { background: rgba(184, 143, 212, 0.15); color: var(--tag-ml); }
 .pub-card__tag--bio { background: rgba(126, 212, 160, 0.12); color: var(--tag-bio); }
 
-.pub-card__link-text {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--link);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.5rem;
-  transition: color 0.2s ease;
+.pub-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
-.pub-card:hover .pub-card__link-text { color: var(--link-hover); }
-.pub-card__link-text::after { content: "→"; }
+.pub-card__link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: rgba(232, 184, 109, 0.9);
+  border: 1px solid rgba(232, 184, 109, 0.55);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.pub-card__link:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
 
 /* Card enter animation */
 .pub-card.animate-in {
