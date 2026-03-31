@@ -21,8 +21,10 @@ const PUBLISHED = [
     meta: "ICLR 2026 — P-AGI Workshop",
     desc: "Uses a Genetic Pareto (GEPA) approach to optimize prompts for scientific reasoning tasks and analyze how prompting shapes reasoning behavior in large language models. Shows that gains in scientific reasoning often come from brittle, model-specific logical heuristics rather than robust, general-purpose reasoning strategies.",
     url: "https://openreview.net/pdf?id=IdYSW0AS4Y",
+    linkLabel: "View on OpenReview",
+    url2: "https://arxiv.org/abs/2603.28038",
+    linkLabel2: "View on arXiv",
     tags: ["ml"],
-    linkLabel: "View workshop paper",
   },
   {
     id: "semantic-limits",
