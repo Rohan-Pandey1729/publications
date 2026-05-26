@@ -11,19 +11,30 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="gradient-orb gradient-orb--1" aria-hidden="true"></div>
-  <div class="gradient-orb gradient-orb--2" aria-hidden="true"></div>
-  <div class="gradient-orb gradient-orb--3" aria-hidden="true"></div>
-
   <header class="header">
-    <a href="https://rohan-pandey1729.github.io/portfolio/" class="back-link" aria-label="Full portfolio">Full Portfolio</a>
-    <div class="header__content">
-      <h1 class="hero-title">
-        <span class="hero-title__line">Research</span>
-        <span class="hero-title__line hero-title__line--accent">Publications</span>
-      </h1>
-      <p class="hero-subtitle">Rohan Pandey — ML, mathematics & computational biology</p>
+    <nav class="topbar" aria-label="Primary navigation">
+      <a href="https://rohan-pandey1729.github.io/portfolio/" class="back-link" aria-label="Full portfolio">Full Portfolio</a>
+      <a href="mailto:rpande.1729@gmail.com" class="contact-link">Contact</a>
+    </nav>
+    <div class="hero-grid">
+      <div class="header__content">
+        <h1 class="hero-title">Research Publications</h1>
+        <p class="hero-subtitle">Selected papers, preprints, and research posters by Rohan Pandey across machine learning, mathematics, scientific reasoning, aerospace simulation, and computational biology.</p>
+      </div>
+      <aside class="impact-panel" aria-label="Publication highlights">
+        <div>
+          <span class="impact-panel__number">2</span>
+          <span class="impact-panel__label">ICLR workshop papers</span>
+        </div>
+        <div>
+          <span class="impact-panel__number">8</span>
+          <span class="impact-panel__label">arXiv preprints</span>
+        </div>
+        <div>
+          <span class="impact-panel__number">3</span>
+          <span class="impact-panel__label">research posters</span>
+        </div>
+      </aside>
     </div>
   </header>
 
@@ -38,22 +49,34 @@
         <span class="filter-label">Filter:</span>
         <div class="filter-chips" role="group" aria-label="Filter by category">
           <button type="button" class="chip chip--active" data-filter="all">All</button>
-          <button type="button" class="chip" data-filter="published">Published</button>
+          <button type="button" class="chip" data-filter="featured">ICLR</button>
+          <button type="button" class="chip" data-filter="arxiv">arXiv</button>
           <button type="button" class="chip" data-filter="in-progress">In Progress</button>
           <button type="button" class="chip" data-filter="posters">Research Posters</button>
           <button type="button" class="chip" data-filter="math">Math</button>
           <button type="button" class="chip" data-filter="ml">ML / CS</button>
+          <button type="button" class="chip" data-filter="rl">RL</button>
+          <button type="button" class="chip" data-filter="aerospace">Aerospace</button>
           <button type="button" class="chip" data-filter="bio">Biology</button>
         </div>
       </div>
     </section>
 
-    <section class="section" id="published">
+    <section class="section section--featured" id="featured">
       <h2 class="section-title">
-        <span class="section-title__text">Published</span>
-        <span class="section-title__count" id="published-count"></span>
+        <span class="section-title__text">Conference Highlights</span>
+        <span class="section-title__count" id="featured-count"></span>
       </h2>
-      <ul class="card-list" id="published-list"></ul>
+      <p class="section-intro">International conference workshop publications at ICLR, highlighted separately from preprints.</p>
+      <ul class="card-list card-list--featured" id="featured-list"></ul>
+    </section>
+
+    <section class="section" id="arxiv">
+      <h2 class="section-title">
+        <span class="section-title__text">arXiv Preprints by Area</span>
+        <span class="section-title__count" id="arxiv-count"></span>
+      </h2>
+      <div class="area-grid" id="arxiv-groups"></div>
     </section>
 
     <section class="section" id="in-progress">

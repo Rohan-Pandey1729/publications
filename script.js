@@ -11,7 +11,10 @@ const PUBLISHED = [
     desc: "Introduces 'log-substrate prompt injection', where attacker-controlled log fields carry adversarial instructions to LLM-based SOC assistants. We propose a four-class attack taxonomy, evaluate 48 strategy–defense–task combinations using gpt-4o-mini, and find persona hijacks and summarization are especially effective; defenses reduce but do not eliminate risk.",
     url: "https://arxiv.org/abs/2605.24421",
     linkLabel: "View on arXiv",
-    tags: ["ml", "cs"],
+    tags: ["ml", "cs", "security"],
+    venue: "arxiv",
+    area: "ML / Security",
+    impact: "arXiv preprint",
   },
   {
     id: "circuitbuilder-rsi",
@@ -22,7 +25,10 @@ const PUBLISHED = [
     linkLabel: "View on OpenReview",
     url2: "https://arxiv.org/abs/2603.17075",
     linkLabel2: "View on arXiv",
-    tags: ["ml", "math"],
+    tags: ["ml", "math", "rl"],
+    venue: "featured",
+    area: "RL / Mathematical AI",
+    impact: "ICLR workshop paper",
   },
   {
     id: "beyond-answer-llms",
@@ -34,6 +40,9 @@ const PUBLISHED = [
     url2: "https://arxiv.org/abs/2603.28038",
     linkLabel2: "View on arXiv",
     tags: ["ml"],
+    venue: "featured",
+    area: "Scientific Reasoning",
+    impact: "ICLR workshop paper",
   },
   {
     id: "semantic-limits",
@@ -43,6 +52,9 @@ const PUBLISHED = [
     url: "https://arxiv.org/abs/2602.06066",
     tags: ["math"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "Mathematics",
+    impact: "arXiv preprint",
   },
   {
     id: "collatz",
@@ -52,6 +64,9 @@ const PUBLISHED = [
     url: "https://arxiv.org/abs/2601.12772",
     tags: ["math"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "Mathematics",
+    impact: "arXiv preprint",
   },
   {
     id: "petersen",
@@ -61,6 +76,9 @@ const PUBLISHED = [
     url: "https://arxiv.org/abs/2601.03293",
     tags: ["math"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "Mathematics",
+    impact: "arXiv preprint",
   },
   {
     id: "rocket",
@@ -68,8 +86,11 @@ const PUBLISHED = [
     meta: "arXiv:2512.22248 — cs.LG",
     desc: "Simulation-based amortized inference approach that trains a neural network on synthetic flight data to predict aerodynamic parameters (drag coefficient and thrust correction factor) for model rockets. Demonstrates sim-to-real transfer with zero real training examples, achieving 12.3 m mean absolute error on apogee prediction across 8 real flights.",
     url: "https://arxiv.org/abs/2512.22248",
-    tags: ["ml"],
+    tags: ["ml", "aerospace"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "Aerospace / Simulation",
+    impact: "arXiv preprint",
   },
   {
     id: "quantization",
@@ -77,8 +98,11 @@ const PUBLISHED = [
     meta: "arXiv:2512.06243 — cs.LG, cs.CR",
     desc: "Systematic empirical study of five representative backdoor defenses across three precision settings (FP32, INT8, INT4) on vision benchmarks. We observe that INT8 quantization reduces detection rates to 0% while leaving attack success rates above 99%, exposing a critical mismatch between defense evaluation and real-world deployment.",
     url: "https://arxiv.org/abs/2512.06243",
-    tags: ["ml"],
+    tags: ["ml", "security"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "ML / Security",
+    impact: "arXiv preprint",
   },
   {
     id: "oncostreams",
@@ -88,6 +112,9 @@ const PUBLISHED = [
     url: "https://arxiv.org/abs/2407.10983",
     tags: ["bio", "math"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "Computational Biology",
+    impact: "arXiv preprint",
   },
   {
     id: "mobius",
@@ -97,6 +124,9 @@ const PUBLISHED = [
     url: "https://arxiv.org/abs/2402.07934",
     tags: ["math"],
     linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "Mathematics",
+    impact: "arXiv preprint",
   },
 ];
 
@@ -109,6 +139,8 @@ const IN_PROGRESS = [
     url: null,
     tags: ["ml"],
     linkLabel: null,
+    area: "ML Systems",
+    impact: "In progress",
   },
 ];
 
@@ -121,6 +153,8 @@ const RESEARCH_POSTERS = [
     url: "https://drive.google.com/file/d/1vivJ5Ao6NDRESVf4K6e0I3Gq5y1CqAWk/view?usp=sharing",
     tags: ["bio", "math"],
     linkLabel: "View Research Poster (UW Population Health Award)",
+    area: "Computational Biology",
+    impact: "Research poster",
   },
   {
     id: "backdoor",
@@ -128,8 +162,10 @@ const RESEARCH_POSTERS = [
     meta: "Research poster",
     desc: "Research on undetectable checksum-triggered backdoors in MLPs trained on MNIST, achieving stealth misclassification with advanced cryptographic methods and adversarial ML techniques.",
     url: "https://drive.google.com/file/d/1V_9-0oTqYPZiQl4nhkCybbh8S508Y4Dq/view?usp=sharing",
-    tags: ["ml"],
+    tags: ["ml", "security"],
     linkLabel: "View Research Poster",
+    area: "ML / Security",
+    impact: "Research poster",
   },
   {
     id: "td-mpc2",
@@ -137,18 +173,28 @@ const RESEARCH_POSTERS = [
     meta: "Research poster",
     desc: "We investigated whether the model-based planning process of TD-MPC2 could be effectively distilled into a policy network via DAgger, training large-scale fully connected neural networks to imitate planning behavior without performing online trajectory sampling.",
     url: "https://drive.google.com/file/d/1R0qSwleil2hdmC4ecqo7-N7GQLzDQZV5/view?usp=sharing",
-    tags: ["ml"],
+    tags: ["ml", "rl"],
     linkLabel: "View Research Poster",
+    area: "RL / Distillation",
+    impact: "Research poster",
   },
 ];
+
+const AREA_ORDER = ["ML / Security", "Mathematics", "Aerospace / Simulation", "Computational Biology"];
 
 // ---------- DOM refs ----------
 const searchInput = document.getElementById("search");
 const filterChips = document.querySelectorAll(".chip");
-const publishedList = document.getElementById("published-list");
+const featuredList = document.getElementById("featured-list");
+const arxivGroups = document.getElementById("arxiv-groups");
 const inprogressList = document.getElementById("inprogress-list");
 const postersList = document.getElementById("posters-list");
-const publishedCount = document.getElementById("published-count");
+const featuredSection = document.getElementById("featured");
+const arxivSection = document.getElementById("arxiv");
+const inprogressSection = document.getElementById("in-progress");
+const postersSection = document.getElementById("posters");
+const featuredCount = document.getElementById("featured-count");
+const arxivCount = document.getElementById("arxiv-count");
 const inprogressCount = document.getElementById("inprogress-count");
 const postersCount = document.getElementById("posters-count");
 const emptyState = document.getElementById("empty-state");
@@ -169,16 +215,21 @@ function matchesSearch(item) {
   const desc = normalize(item.desc);
   const meta = normalize(item.meta);
   const tags = item.tags.join(" ");
-  return title.includes(q) || desc.includes(q) || meta.includes(q) || tags.includes(q);
+  const area = normalize(item.area);
+  const impact = normalize(item.impact);
+  return title.includes(q) || desc.includes(q) || meta.includes(q) || tags.includes(q) || area.includes(q) || impact.includes(q);
 }
 
 function matchesCategory(item, category) {
   if (category === "all") return true;
-  if (category === "published") return PUBLISHED.some((p) => p.id === item.id);
+  if (category === "featured") return item.venue === "featured";
+  if (category === "arxiv") return item.venue === "arxiv";
   if (category === "in-progress") return IN_PROGRESS.some((p) => p.id === item.id);
   if (category === "posters") return RESEARCH_POSTERS.some((p) => p.id === item.id);
   if (category === "math") return item.tags.includes("math");
   if (category === "ml") return item.tags.includes("ml");
+  if (category === "rl") return item.tags.includes("rl");
+  if (category === "aerospace") return item.tags.includes("aerospace");
   if (category === "bio") return item.tags.includes("bio");
   return true;
 }
@@ -186,15 +237,24 @@ function matchesCategory(item, category) {
 function tagClass(tag) {
   if (tag === "math") return "pub-card__tag--math";
   if (tag === "ml") return "pub-card__tag--ml";
+  if (tag === "rl") return "pub-card__tag--rl";
+  if (tag === "aerospace") return "pub-card__tag--aerospace";
   if (tag === "bio") return "pub-card__tag--bio";
   return "";
 }
 
 function renderCard(item, type) {
-  const isPublished = type === "published";
+  const isFeatured = type === "featured";
+  const isArxiv = type === "arxiv";
   const isPoster = type === "posters";
-  const badge = isPublished ? "Published" : isPoster ? "Research Poster" : "In Progress / Report";
-  const badgeClass = isPublished ? "pub-card__badge--published" : isPoster ? "pub-card__badge--poster" : "pub-card__badge--in-progress";
+  const badge = isFeatured ? "ICLR Workshop" : isArxiv ? "arXiv Preprint" : isPoster ? "Research Poster" : "In Progress / Report";
+  const badgeClass = isFeatured
+    ? "pub-card__badge--featured"
+    : isArxiv
+      ? "pub-card__badge--arxiv"
+      : isPoster
+        ? "pub-card__badge--poster"
+        : "pub-card__badge--in-progress";
   const links = [];
   if (item.url && item.linkLabel) {
     links.push({ url: item.url, label: item.linkLabel });
@@ -215,9 +275,12 @@ function renderCard(item, type) {
     .map((t) => `<span class="pub-card__tag ${tagClass(t)}">${escapeHtml(t.toUpperCase())}</span>`)
     .join("");
 
-  const el = document.createElement(isPublished ? "li" : "li");
+  const el = document.createElement("li");
   const inner = `
-    <span class="pub-card__badge ${badgeClass}">${escapeHtml(badge)}</span>
+    <div class="pub-card__topline">
+      <span class="pub-card__badge ${badgeClass}">${escapeHtml(badge)}</span>
+      <span class="pub-card__area">${escapeHtml(item.area || "")}</span>
+    </div>
     <h3 class="pub-card__title">${escapeHtml(item.title)}</h3>
     <p class="pub-card__meta">${escapeHtml(item.meta)}</p>
     <p class="pub-card__desc">${escapeHtml(item.desc)}</p>
@@ -226,7 +289,7 @@ function renderCard(item, type) {
   `;
 
   const card = document.createElement("div");
-  card.className = "pub-card";
+  card.className = `pub-card ${isFeatured ? "pub-card--featured" : ""}`;
   card.setAttribute("data-card", "");
   card.innerHTML = inner;
 
@@ -248,56 +311,91 @@ function escapeAttr(text) {
 }
 
 function filterItems(type) {
-  const source = type === "published" ? PUBLISHED : type === "posters" ? RESEARCH_POSTERS : IN_PROGRESS;
-  return source.filter((item) => matchesSearch(item) && matchesCategory(item, activeFilter));
+  const source = type === "posters" ? RESEARCH_POSTERS : type === "in-progress" ? IN_PROGRESS : PUBLISHED;
+  const venueFiltered = type === "featured" || type === "arxiv" ? source.filter((item) => item.venue === type) : source;
+  return venueFiltered.filter((item) => matchesSearch(item) && matchesCategory(item, activeFilter));
+}
+
+function groupByArea(items) {
+  return items.reduce((groups, item) => {
+    const area = item.area || "Other";
+    if (!groups[area]) groups[area] = [];
+    groups[area].push(item);
+    return groups;
+  }, {});
+}
+
+function orderedAreas(groups) {
+  const known = AREA_ORDER.filter((area) => groups[area]);
+  const extra = Object.keys(groups)
+    .filter((area) => !AREA_ORDER.includes(area))
+    .sort();
+  return [...known, ...extra];
+}
+
+function appendAnimated(list, item, type, delay) {
+  const li = renderCard(item, type);
+  const card = li.querySelector("[data-card]");
+  if (card) {
+    card.style.animationDelay = `${delay * 0.05}s`;
+    card.classList.add("animate-in");
+  }
+  list.appendChild(li);
+  return delay + 1;
 }
 
 function render() {
-  const publishedFiltered = filterItems("published");
+  const featuredFiltered = filterItems("featured");
+  const arxivFiltered = filterItems("arxiv");
   const inprogressFiltered = filterItems("in-progress");
   const postersFiltered = filterItems("posters");
 
-  publishedList.innerHTML = "";
+  featuredList.innerHTML = "";
+  arxivGroups.innerHTML = "";
   inprogressList.innerHTML = "";
   postersList.innerHTML = "";
 
   let delay = 0;
-  publishedFiltered.forEach((item, i) => {
-    const li = renderCard(item, "published");
-    const card = li.querySelector("[data-card]");
-    if (card) {
-      card.style.animationDelay = `${delay * 0.05}s`;
-      card.classList.add("animate-in");
-      delay++;
-    }
-    publishedList.appendChild(li);
-  });
-  inprogressFiltered.forEach((item) => {
-    const li = renderCard(item, "in-progress");
-    const card = li.querySelector("[data-card]");
-    if (card) {
-      card.style.animationDelay = `${delay * 0.05}s`;
-      card.classList.add("animate-in");
-      delay++;
-    }
-    inprogressList.appendChild(li);
-  });
-  postersFiltered.forEach((item) => {
-    const li = renderCard(item, "posters");
-    const card = li.querySelector("[data-card]");
-    if (card) {
-      card.style.animationDelay = `${delay * 0.05}s`;
-      card.classList.add("animate-in");
-      delay++;
-    }
-    postersList.appendChild(li);
+  featuredFiltered.forEach((item) => {
+    delay = appendAnimated(featuredList, item, "featured", delay);
   });
 
-  publishedCount.textContent = publishedFiltered.length ? `(${publishedFiltered.length})` : "";
+  const groups = groupByArea(arxivFiltered);
+  orderedAreas(groups).forEach((area) => {
+    const group = document.createElement("article");
+    group.className = "area-group";
+    const count = groups[area].length;
+    group.innerHTML = `
+      <div class="area-group__header">
+        <h3 class="area-group__title">${escapeHtml(area)}</h3>
+        <span class="area-group__count">${count} ${count === 1 ? "paper" : "papers"}</span>
+      </div>
+      <ul class="card-list area-group__list"></ul>
+    `;
+    const list = group.querySelector(".area-group__list");
+    groups[area].forEach((item) => {
+      delay = appendAnimated(list, item, "arxiv", delay);
+    });
+    arxivGroups.appendChild(group);
+  });
+
+  inprogressFiltered.forEach((item) => {
+    delay = appendAnimated(inprogressList, item, "in-progress", delay);
+  });
+  postersFiltered.forEach((item) => {
+    delay = appendAnimated(postersList, item, "posters", delay);
+  });
+
+  featuredCount.textContent = featuredFiltered.length ? `(${featuredFiltered.length})` : "";
+  arxivCount.textContent = arxivFiltered.length ? `(${arxivFiltered.length})` : "";
   inprogressCount.textContent = inprogressFiltered.length ? `(${inprogressFiltered.length})` : "";
   postersCount.textContent = postersFiltered.length ? `(${postersFiltered.length})` : "";
 
-  const total = publishedFiltered.length + inprogressFiltered.length + postersFiltered.length;
+  const total = featuredFiltered.length + arxivFiltered.length + inprogressFiltered.length + postersFiltered.length;
+  featuredSection.hidden = total > 0 && featuredFiltered.length === 0;
+  arxivSection.hidden = total > 0 && arxivFiltered.length === 0;
+  inprogressSection.hidden = total > 0 && inprogressFiltered.length === 0;
+  postersSection.hidden = total > 0 && postersFiltered.length === 0;
   emptyState.classList.toggle("hidden", total > 0);
 }
 
@@ -309,8 +407,8 @@ function initCardTilt() {
       const { left, top, width, height } = rect();
       const x = (e.clientX - left) / width - 0.5;
       const y = (e.clientY - top) / height - 0.5;
-      const tiltX = Math.max(-3, Math.min(3, -y * 4));
-      const tiltY = Math.max(-3, Math.min(3, x * 4));
+      const tiltX = Math.max(-2, Math.min(2, -y * 3));
+      const tiltY = Math.max(-2, Math.min(2, x * 3));
       card.style.setProperty("--tilt-x", `${tiltX}deg`);
       card.style.setProperty("--tilt-y", `${tiltY}deg`);
     };
