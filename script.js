@@ -5,6 +5,15 @@
 
 const PUBLISHED = [
   {
+    id: "watchtower-poisoning",
+    title: "Poisoning the Watchtower: Prompt Injection Attacks Against LLM-Augmented Security Operations Through Adversarial Log Content",
+    meta: "arXiv:2605.24421",
+    desc: "Introduces 'log-substrate prompt injection', where attacker-controlled log fields carry adversarial instructions to LLM-based SOC assistants. We propose a four-class attack taxonomy, evaluate 48 strategy–defense–task combinations using gpt-4o-mini, and find persona hijacks and summarization are especially effective; defenses reduce but do not eliminate risk.",
+    url: "https://arxiv.org/abs/2605.24421",
+    linkLabel: "View on arXiv",
+    tags: ["ml", "cs"],
+  },
+  {
     id: "circuitbuilder-rsi",
     title: "CircuitBuilder: From Polynomials to Circuits via Reinforcement Learning",
     meta: "ICLR 2026 — RSI Workshop",
