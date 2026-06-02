@@ -446,6 +446,7 @@ body::before {
 
 .pub-card__badge--featured { background: var(--gold-soft); color: #845608; }
 .pub-card__badge--arxiv { background: var(--accent-soft); color: var(--accent-strong); }
+.pub-card__badge--zenodo { background: var(--green-soft); color: var(--green); }
 .pub-card__badge--in-progress { background: var(--rose-soft); color: var(--rose); }
 .pub-card__badge--poster { background: var(--green-soft); color: var(--green); }
 

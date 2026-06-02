@@ -117,6 +117,18 @@ const PUBLISHED = [
     impact: "arXiv preprint",
   },
   {
+    id: "follistatin-muscle-recovery",
+    title: "Genetic Variation in Follistatin and its Role in Muscle Recovery and Hypertrophy: A Dose-Dependent Mechanistic Review",
+    meta: "Zenodo DOI: 10.5281/zenodo.20501913 — Preprint, 2026",
+    desc: "Reviews the Follistatin-Myostatin axis in skeletal muscle plasticity, distinguishing binary overexpression from graded physiological modulation. Synthesizes evidence from FST polymorphism studies and AAV-mediated FST gene therapy trials, while mapping therapeutic-window concerns around reproductive and bone-related off-target toxicity.",
+    url: "https://doi.org/10.5281/zenodo.20501913",
+    tags: ["bio"],
+    linkLabel: "View on Zenodo",
+    venue: "zenodo",
+    area: "Muscle Biology",
+    impact: "Zenodo preprint",
+  },
+  {
     id: "mobius",
     title: "The Möbius function of the poset of triangular numbers under divisibility",
     meta: "arXiv:2402.07934 — math.NT",
@@ -180,7 +192,7 @@ const RESEARCH_POSTERS = [
   },
 ];
 
-const AREA_ORDER = ["ML / Security", "Mathematics", "Aerospace / Simulation", "Computational Biology"];
+const AREA_ORDER = ["ML / Security", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
 
 // ---------- DOM refs ----------
 const searchInput = document.getElementById("search");
@@ -223,7 +235,7 @@ function matchesSearch(item) {
 function matchesCategory(item, category) {
   if (category === "all") return true;
   if (category === "featured") return item.venue === "featured";
-  if (category === "arxiv") return item.venue === "arxiv";
+  if (category === "arxiv") return item.venue === "arxiv" || item.venue === "zenodo";
   if (category === "in-progress") return IN_PROGRESS.some((p) => p.id === item.id);
   if (category === "posters") return RESEARCH_POSTERS.some((p) => p.id === item.id);
   if (category === "math") return item.tags.includes("math");
@@ -246,11 +258,14 @@ function tagClass(tag) {
 function renderCard(item, type) {
   const isFeatured = type === "featured";
   const isArxiv = type === "arxiv";
+  const isZenodo = item.venue === "zenodo";
   const isPoster = type === "posters";
-  const badge = isFeatured ? "ICLR Workshop" : isArxiv ? "arXiv Preprint" : isPoster ? "Research Poster" : "In Progress / Report";
+  const badge = isFeatured ? "ICLR Workshop" : isZenodo ? "Zenodo Preprint" : isArxiv ? "arXiv Preprint" : isPoster ? "Research Poster" : "In Progress / Report";
   const badgeClass = isFeatured
     ? "pub-card__badge--featured"
-    : isArxiv
+    : isZenodo
+      ? "pub-card__badge--zenodo"
+      : isArxiv
       ? "pub-card__badge--arxiv"
       : isPoster
         ? "pub-card__badge--poster"
@@ -312,7 +327,12 @@ function escapeAttr(text) {
 
 function filterItems(type) {
   const source = type === "posters" ? RESEARCH_POSTERS : type === "in-progress" ? IN_PROGRESS : PUBLISHED;
-  const venueFiltered = type === "featured" || type === "arxiv" ? source.filter((item) => item.venue === type) : source;
+  const venueFiltered =
+    type === "featured"
+      ? source.filter((item) => item.venue === type)
+      : type === "arxiv"
+        ? source.filter((item) => item.venue === "arxiv" || item.venue === "zenodo")
+        : source;
   return venueFiltered.filter((item) => matchesSearch(item) && matchesCategory(item, activeFilter));
 }
 
