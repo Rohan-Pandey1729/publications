@@ -128,21 +128,21 @@ const PUBLISHED = [
     area: "Mathematics",
     impact: "arXiv preprint",
   },
-];
-
-const IN_PROGRESS = [
   {
     id: "thinkswitch",
     title: "ThinkSwitch: Context-Distilled Dual-Mode LoRAs",
-    meta: "In progress",
-    desc: "Developed a dual-mode LLM training framework that alternates between low-compute \"instruct\" and high-compute \"thinking\" modes. Uses context distillation, LoRA deltas, and MergeKit blending to iteratively boost reasoning on software engineering tasks.",
-    url: null,
+    meta: "arXiv:2606.01080 — cs.LG",
+    desc: "Introduces ThinkSwitch, a low-compute loop for co-training paired instruct and thinking Qwen3-4B checkpoints. Thinking-model answers are stripped of reasoning traces, distilled into an instruct checkpoint with QLoRA, then recombined into a thinking checkpoint through spherical weight interpolation, improving AIME 2026 and PubMedQA subset scores using only 15 training prompts per domain at $2.86 total cost.",
+    url: "https://arxiv.org/abs/2606.01080",
     tags: ["ml"],
-    linkLabel: null,
+    linkLabel: "View on arXiv",
+    venue: "arxiv",
     area: "ML Systems",
-    impact: "In progress",
+    impact: "arXiv preprint",
   },
 ];
+
+const IN_PROGRESS = [];
 
 const RESEARCH_POSTERS = [
   {
