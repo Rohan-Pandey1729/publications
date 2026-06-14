@@ -17,6 +17,18 @@ const PUBLISHED = [
     impact: "arXiv preprint",
   },
   {
+    id: "async-pricing-marl",
+    title: "Failure Modes of Deep Multi-Agent RL in Asynchronous Pricing: Reproducible Triggers, Trace Diagnostics, and a Partial Fix",
+    meta: "arXiv:2606.09884 — cs.MA, cs.AI, cs.LG, econ.EM",
+    desc: "Studies reproducible failure modes in deep multi-agent reinforcement learning for continuous-time pricing markets, including tacit cartel formation between DDPG agents and critic instability at high event rates. Shows that asynchrony and latency can partially reduce collusion, while trajectory-level diagnostics reveal signaling collapse and post-shock non-recovery.",
+    url: "https://arxiv.org/abs/2606.09884",
+    tags: ["ml", "rl"],
+    linkLabel: "View on arXiv",
+    venue: "arxiv",
+    area: "RL / Multi-Agent Systems",
+    impact: "arXiv preprint",
+  },
+  {
     id: "circuitbuilder-rsi",
     title: "CircuitBuilder: From Polynomials to Circuits via Reinforcement Learning",
     meta: "ICLR 2026 — RSI Workshop",
@@ -192,7 +204,7 @@ const RESEARCH_POSTERS = [
   },
 ];
 
-const AREA_ORDER = ["ML / Security", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
+const AREA_ORDER = ["ML / Security", "RL / Multi-Agent Systems", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
 
 // ---------- DOM refs ----------
 const searchInput = document.getElementById("search");
