@@ -70,9 +70,9 @@ const PUBLISHED = [
   },
   {
     id: "collatz",
-    title: "2-Adic Obstructions to Presburger-Definable Characterizations of Collatz Cycles",
+    title: "Logical Undefinability of the Generalized Collatz Transition Relation in Büchi Arithmetic",
     meta: "arXiv:2601.12772 — math.NT, math.DS",
-    desc: "Investigates structural limitations of Presburger-arithmetic-based approaches to the Collatz problem. Shows that the Collatz cycle equation admits unique solutions in the 2-adic integers (ghost cycles), which are genuine periodic orbits satisfying all local parity constraints. Proves unconditionally that the divisibility predicate is not semilinear for any fixed number of odd steps, establishing an obstruction to Presburger definability through unbounded fiber periods.",
+    desc: "Shows that the arbitrary-step transition relation of the generalized Collatz map Tq,d is not first-order definable in Base-2 Büchi Arithmetic (BA2). The argument proves that definability of the transition relation would imply definability of the exponential set Pq={q^y:y∈N}; since Pq is strictly non-semilinear, this contradicts the Cobham-Semënov theorem and rules out recognition by any finite automaton reading base-2 representations.",
     url: "https://arxiv.org/abs/2601.12772",
     tags: ["math"],
     linkLabel: "View on arXiv",
