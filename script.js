@@ -567,12 +567,12 @@ function renderGraphView() {
   const ALL = [...PUBLISHED, ...RESEARCH_POSTERS];
 
   const CLUSTERS = {
-    ml:        { x: 310, y: 270 },
-    math:      { x: 700, y: 200 },
-    rl:        { x: 490, y: 145 },
-    bio:       { x: 745, y: 440 },
-    aerospace: { x: 875, y: 300 },
-    security:  { x: 135, y: 385 },
+    ml:        { x: 245, y: 290 },
+    math:      { x: 740, y: 155 },
+    rl:        { x: 500, y: 115 },
+    bio:       { x: 800, y: 475 },
+    aerospace: { x: 920, y: 305 },
+    security:  { x: 105, y: 430 },
   };
 
   const CLUSTER_LABELS = {
@@ -589,36 +589,36 @@ function renderGraphView() {
       cy = cTags.reduce((s, t) => s + CLUSTERS[t].y, 0) / cTags.length;
     }
     const angle = i * 2.399;
-    const r = 42 + (i % 5) * 20;
+    const r = 60 + (i % 5) * 26;
     return {
       item, cx, cy,
-      x: Math.max(55, Math.min(W - 55, cx + Math.cos(angle) * r)),
-      y: Math.max(55, Math.min(H - 55, cy + Math.sin(angle) * r)),
+      x: Math.max(60, Math.min(W - 60, cx + Math.cos(angle) * r)),
+      y: Math.max(60, Math.min(H - 60, cy + Math.sin(angle) * r)),
       vx: 0, vy: 0,
     };
   });
 
-  // Mini force simulation — 60 iterations
-  for (let iter = 0; iter < 60; iter++) {
+  // Mini force simulation — 80 iterations
+  for (let iter = 0; iter < 80; iter++) {
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const dx = nodes[j].x - nodes[i].x;
         const dy = nodes[j].y - nodes[i].y;
         const d2 = dx * dx + dy * dy || 1;
-        if (d2 < 85 * 85) {
+        if (d2 < 110 * 110) {
           const d = Math.sqrt(d2);
-          const f = 2000 / d2;
+          const f = 3500 / d2;
           nodes[i].vx -= (dx / d) * f;  nodes[i].vy -= (dy / d) * f;
           nodes[j].vx += (dx / d) * f;  nodes[j].vy += (dy / d) * f;
         }
       }
     }
     nodes.forEach(n => {
-      n.vx += (n.cx - n.x) * 0.055;
-      n.vy += (n.cy - n.y) * 0.055;
-      n.x = Math.max(55, Math.min(W - 55, n.x + n.vx));
-      n.y = Math.max(55, Math.min(H - 55, n.y + n.vy));
-      n.vx *= 0.52; n.vy *= 0.52;
+      n.vx += (n.cx - n.x) * 0.038;
+      n.vy += (n.cy - n.y) * 0.038;
+      n.x = Math.max(60, Math.min(W - 60, n.x + n.vx));
+      n.y = Math.max(60, Math.min(H - 60, n.y + n.vy));
+      n.vx *= 0.48; n.vy *= 0.48;
     });
   }
 
