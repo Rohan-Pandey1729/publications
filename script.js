@@ -285,7 +285,8 @@ function tagClass(tag) {
 }
 
 function renderCard(item, type) {
-  const isFeatured = type === "featured";
+  const isSpotlight = type === "spotlight";
+  const isFeatured = type === "featured" || isSpotlight;
   const isArxiv = type === "arxiv";
   const isZenodo = item.venue === "zenodo";
   const isPoster = type === "posters";
@@ -320,20 +321,43 @@ function renderCard(item, type) {
     .join("");
 
   const el = document.createElement("li");
-  const inner = `
-    <div class="pub-card__topline">
-      <span class="pub-card__badge ${badgeClass}">${escapeHtml(badge)}</span>
-      <span class="pub-card__area">${escapeHtml(item.area || "")}</span>
-    </div>
-    <h3 class="pub-card__title">${escapeHtml(item.title)}</h3>
-    <p class="pub-card__meta">${escapeHtml(item.meta)}</p>
-    <p class="pub-card__desc">${escapeHtml(item.desc)}</p>
-    <div class="pub-card__tags">${tagsHtml}</div>
-    ${linksHtml}
-  `;
+
+  let inner;
+  if (isSpotlight) {
+    inner = `
+      <div class="spotlight__topline">
+        <span class="spotlight__eyebrow">Latest Conference Paper</span>
+        <span class="pub-card__badge pub-card__badge--featured">${escapeHtml(badge)}</span>
+      </div>
+      <h3 class="spotlight__title">${escapeHtml(item.title)}</h3>
+      <div class="spotlight__cols">
+        <div class="spotlight__main">
+          <p class="spotlight__meta">${escapeHtml(item.meta)}</p>
+          <p class="spotlight__desc">${escapeHtml(item.desc)}</p>
+        </div>
+        <div class="spotlight__side">
+          <div class="pub-card__tags">${tagsHtml}</div>
+          ${linksHtml}
+        </div>
+      </div>
+    `;
+    el.className = "spotlight-item";
+  } else {
+    inner = `
+      <div class="pub-card__topline">
+        <span class="pub-card__badge ${badgeClass}">${escapeHtml(badge)}</span>
+        <span class="pub-card__area">${escapeHtml(item.area || "")}</span>
+      </div>
+      <h3 class="pub-card__title">${escapeHtml(item.title)}</h3>
+      <p class="pub-card__meta">${escapeHtml(item.meta)}</p>
+      <p class="pub-card__desc">${escapeHtml(item.desc)}</p>
+      <div class="pub-card__tags">${tagsHtml}</div>
+      ${linksHtml}
+    `;
+  }
 
   const card = document.createElement("div");
-  card.className = `pub-card ${isFeatured ? "pub-card--featured" : ""}`;
+  card.className = `pub-card ${isSpotlight ? "pub-card--spotlight" : isFeatured ? "pub-card--featured" : ""}`;
   card.setAttribute("data-card", "");
   card.innerHTML = inner;
 
@@ -405,8 +429,8 @@ function render() {
   postersList.innerHTML = "";
 
   let delay = 0;
-  featuredFiltered.forEach((item) => {
-    delay = appendAnimated(featuredList, item, "featured", delay);
+  featuredFiltered.forEach((item, index) => {
+    delay = appendAnimated(featuredList, item, index === 0 ? "spotlight" : "featured", delay);
   });
 
   const groups = groupByArea(arxivFiltered);
@@ -498,6 +522,34 @@ resetBtn.addEventListener("click", () => {
   initCardTilt();
 });
 
+// ---------- Stat counters ----------
+function animateCount(el, from, to, duration) {
+  const start = performance.now();
+  const tick = (now) => {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(from + (to - from) * eased);
+    if (t < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function initStatCounters() {
+  const panel = document.querySelector(".impact-panel");
+  if (!panel) return;
+  const numbers = panel.querySelectorAll(".impact-panel__number");
+  const targets = Array.from(numbers).map((el) => parseInt(el.textContent, 10));
+  let fired = false;
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !fired) {
+      fired = true;
+      numbers.forEach((el, i) => animateCount(el, 0, targets[i], 1400));
+      observer.disconnect();
+    }
+  }, { threshold: 0.6 });
+  observer.observe(panel);
+}
+
 // ---------- Scroll reveal (optional) ----------
 function initScrollReveal() {
   const opts = { threshold: 0.08, rootMargin: "0px 0px -40px 0px" };
@@ -513,3 +565,4 @@ function initScrollReveal() {
 render();
 initCardTilt();
 initScrollReveal();
+initStatCounters();
