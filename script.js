@@ -5,6 +5,21 @@
 
 const PUBLISHED = [
   {
+    id: "factorlibrary",
+    title: "FactorLibrary: From Polynomials to Circuits via Recursive Subgoals",
+    meta: "ICML 2026 — 3rd AI for Math Workshop",
+    desc: "Introduces FactorLibrary, a reusable library of factorizable subexpressions that serve as recursive subgoals for reinforcement-learning agents synthesizing minimal arithmetic circuits over finite fields. Compares bottom-up Gumbel-PPO-MCTS with top-down PPO+MCTS and SAC agents, with PPO+MCTS finding certified optimal circuits up to complexity 8 at a 91.8% success rate.",
+    url: "https://openreview.net/pdf?id=2yIetdPvQh",
+    linkLabel: "View on OpenReview",
+    url2: "https://arxiv.org/abs/2606.25394",
+    linkLabel2: "View on arXiv",
+    tags: ["ml", "math", "rl"],
+    venue: "featured",
+    area: "RL / Mathematical AI",
+    impact: "ICML workshop paper",
+    badgeLabel: "ICML Workshop",
+  },
+  {
     id: "watchtower-poisoning",
     title: "Poisoning the Watchtower: Prompt Injection Attacks Against LLM-Augmented Security Operations Through Adversarial Log Content",
     meta: "arXiv:2605.24421",
@@ -41,6 +56,7 @@ const PUBLISHED = [
     venue: "featured",
     area: "RL / Mathematical AI",
     impact: "ICLR workshop paper",
+    badgeLabel: "ICLR Workshop",
   },
   {
     id: "beyond-answer-llms",
@@ -55,6 +71,7 @@ const PUBLISHED = [
     venue: "featured",
     area: "Scientific Reasoning",
     impact: "ICLR workshop paper",
+    badgeLabel: "ICLR Workshop",
   },
   {
     id: "semantic-limits",
@@ -272,7 +289,7 @@ function renderCard(item, type) {
   const isArxiv = type === "arxiv";
   const isZenodo = item.venue === "zenodo";
   const isPoster = type === "posters";
-  const badge = isFeatured ? "ICLR Workshop" : isZenodo ? "Zenodo Preprint" : isArxiv ? "arXiv Preprint" : isPoster ? "Research Poster" : "In Progress / Report";
+  const badge = isFeatured ? item.badgeLabel || "Conference Workshop" : isZenodo ? "Zenodo Preprint" : isArxiv ? "arXiv Preprint" : isPoster ? "Research Poster" : "In Progress / Report";
   const badgeClass = isFeatured
     ? "pub-card__badge--featured"
     : isZenodo
