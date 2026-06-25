@@ -11,9 +11,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div id="reading-progress" aria-hidden="true"></div>
+  <div class="bg-ambient" aria-hidden="true">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+  </div>
   <header class="header">
     <nav class="topbar" aria-label="Primary navigation">
-      <a href="https://rohan-pandey1729.github.io/portfolio/" class="back-link" aria-label="Full portfolio">Full Portfolio</a>
+      <a href="https://rohan-pandey1729.github.io/developerFolio/" class="back-link" aria-label="Full portfolio">Full Portfolio</a>
       <a href="mailto:rpande.1729@gmail.com" class="contact-link">Contact</a>
     </nav>
     <div class="hero-grid">
@@ -61,6 +67,16 @@
         </div>
       </div>
     </section>
+
+    <div class="view-switcher" role="group" aria-label="Switch view mode">
+      <span class="view-switcher__label">View as:</span>
+      <button type="button" class="view-btn view-btn--active" data-view="list">&#8801; List</button>
+      <button type="button" class="view-btn" data-view="graph">&#9711; Constellation</button>
+      <button type="button" class="view-btn" data-view="timeline">&#8211; Timeline</button>
+    </div>
+
+    <div id="graph-view" class="alt-view hidden"></div>
+    <div id="timeline-view" class="alt-view hidden"></div>
 
     <section class="section section--featured" id="featured">
       <h2 class="section-title">

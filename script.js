@@ -189,6 +189,7 @@ const RESEARCH_POSTERS = [
   {
     id: "cancer-modeling",
     title: "Parameter Identifiability for CAR T-cell Therapy Models",
+    date: "2024-05",
     meta: "UW Population Health Award · Research poster",
     desc: "Developed mathematical models based on systems of ODEs to simulate CAR T-cell and tumor interactions using parameter sets from B-ALL patient data. Applied linear regression and MSE loss to train models predicting therapy outcomes and assess treatment plan efficacy. Won the UW Population Health Award.",
     url: "https://drive.google.com/file/d/1vivJ5Ao6NDRESVf4K6e0I3Gq5y1CqAWk/view?usp=sharing",
@@ -200,6 +201,7 @@ const RESEARCH_POSTERS = [
   {
     id: "backdoor",
     title: "Machine Learning Backdoor Research",
+    date: "2024-06",
     meta: "Research poster",
     desc: "Research on undetectable checksum-triggered backdoors in MLPs trained on MNIST, achieving stealth misclassification with advanced cryptographic methods and adversarial ML techniques.",
     url: "https://drive.google.com/file/d/1V_9-0oTqYPZiQl4nhkCybbh8S508Y4Dq/view?usp=sharing",
@@ -211,6 +213,7 @@ const RESEARCH_POSTERS = [
   {
     id: "td-mpc2",
     title: "TD-MPC2 Policy Distillation",
+    date: "2024-12",
     meta: "Research poster",
     desc: "We investigated whether the model-based planning process of TD-MPC2 could be effectively distilled into a policy network via DAgger, training large-scale fully connected neural networks to imitate planning behavior without performing online trajectory sampling.",
     url: "https://drive.google.com/file/d/1R0qSwleil2hdmC4ecqo7-N7GQLzDQZV5/view?usp=sharing",
@@ -243,8 +246,20 @@ const resetBtn = document.getElementById("reset-filters");
 
 let activeFilter = "all";
 let searchQuery = "";
+let activeView = "list";
 
 // ---------- Helpers ----------
+function getItemDate(item) {
+  if (item.date) return item.date;
+  const arxiv = item.meta.match(/arXiv:(\d{2})(\d{2})\./);
+  if (arxiv) return `${2000 + parseInt(arxiv[1])}-${arxiv[2]}`;
+  const conf = item.meta.match(/\b(ICML|ICLR|NeurIPS|CVPR)\s+(\d{4})\b/);
+  if (conf) return `${conf[2]}-06`;
+  const yr = item.meta.match(/\b(20\d{2})\b/);
+  if (yr) return `${yr[1]}-06`;
+  return "2024-01";
+}
+
 function normalize(s) {
   return (s || "").toLowerCase().trim();
 }
@@ -418,6 +433,31 @@ function appendAnimated(list, item, type, delay) {
 }
 
 function render() {
+  const graphDiv = document.getElementById("graph-view");
+  const timelineDiv = document.getElementById("timeline-view");
+  const listSections = [featuredSection, arxivSection, inprogressSection, postersSection];
+
+  if (activeView === "graph") {
+    listSections.forEach(s => { s.hidden = true; });
+    emptyState.classList.add("hidden");
+    graphDiv.classList.remove("hidden");
+    timelineDiv.classList.add("hidden");
+    renderGraphView();
+    return;
+  }
+
+  if (activeView === "timeline") {
+    listSections.forEach(s => { s.hidden = true; });
+    emptyState.classList.add("hidden");
+    graphDiv.classList.add("hidden");
+    timelineDiv.classList.remove("hidden");
+    renderTimelineView();
+    return;
+  }
+
+  graphDiv.classList.add("hidden");
+  timelineDiv.classList.add("hidden");
+
   const featuredFiltered = filterItems("featured");
   const arxivFiltered = filterItems("arxiv");
   const inprogressFiltered = filterItems("in-progress");
@@ -470,6 +510,278 @@ function render() {
   inprogressSection.hidden = total > 0 && inprogressFiltered.length === 0;
   postersSection.hidden = total > 0 && postersFiltered.length === 0;
   emptyState.classList.toggle("hidden", total > 0);
+}
+
+// ---------- Reading progress ----------
+function initReadingProgress() {
+  const bar = document.getElementById("reading-progress");
+  if (!bar) return;
+  window.addEventListener("scroll", () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+  }, { passive: true });
+}
+
+// ---------- Graph tooltip ----------
+function showGraphTooltip(item, e) {
+  let tip = document.getElementById("graph-tooltip");
+  if (!tip) {
+    tip = document.createElement("div");
+    tip.id = "graph-tooltip";
+    tip.className = "graph-tooltip";
+    document.body.appendChild(tip);
+  }
+  const badge = item.badgeLabel || item.impact || "";
+  const desc = item.desc.length > 190 ? item.desc.slice(0, 187) + "…" : item.desc;
+  tip.innerHTML = `
+    ${badge ? `<div class="graph-tooltip__badge">${escapeHtml(badge)}</div>` : ""}
+    <h4 class="graph-tooltip__title">${escapeHtml(item.title)}</h4>
+    <p class="graph-tooltip__desc">${escapeHtml(desc)}</p>
+    ${item.meta ? `<div class="graph-tooltip__meta">${escapeHtml(item.meta)}</div>` : ""}
+    <div class="graph-tooltip__hint">Click to open →</div>
+  `;
+  tip.classList.add("visible");
+  if (e) positionGraphTooltip(e);
+}
+
+function positionGraphTooltip(e) {
+  const tip = document.getElementById("graph-tooltip");
+  if (!tip || !tip.classList.contains("visible")) return;
+  const x = e.clientX + 18;
+  const y = e.clientY - 12;
+  tip.style.left = Math.min(x, window.innerWidth - 300) + "px";
+  tip.style.top  = Math.max(8, Math.min(y, window.innerHeight - 200)) + "px";
+}
+
+function hideGraphTooltip() {
+  const tip = document.getElementById("graph-tooltip");
+  if (tip) tip.classList.remove("visible");
+}
+
+// ---------- Constellation view ----------
+function renderGraphView() {
+  const graphDiv = document.getElementById("graph-view");
+  graphDiv.innerHTML = '<div class="graph-header">Hover to preview · Click to open</div>';
+
+  const W = 1000, H = 600;
+  const ALL = [...PUBLISHED, ...RESEARCH_POSTERS];
+
+  const CLUSTERS = {
+    ml:        { x: 310, y: 270 },
+    math:      { x: 700, y: 200 },
+    rl:        { x: 490, y: 145 },
+    bio:       { x: 745, y: 440 },
+    aerospace: { x: 875, y: 300 },
+    security:  { x: 135, y: 385 },
+  };
+
+  const CLUSTER_LABELS = {
+    ml: "ML / CS", math: "Mathematics", rl: "RL",
+    bio: "Biology", aerospace: "Aerospace", security: "Security",
+  };
+
+  // Initial positions based on tag cluster centroids + golden-angle jitter
+  const nodes = ALL.map((item, i) => {
+    const cTags = item.tags.filter(t => CLUSTERS[t]);
+    let cx = W / 2, cy = H / 2;
+    if (cTags.length) {
+      cx = cTags.reduce((s, t) => s + CLUSTERS[t].x, 0) / cTags.length;
+      cy = cTags.reduce((s, t) => s + CLUSTERS[t].y, 0) / cTags.length;
+    }
+    const angle = i * 2.399;
+    const r = 42 + (i % 5) * 20;
+    return {
+      item, cx, cy,
+      x: Math.max(55, Math.min(W - 55, cx + Math.cos(angle) * r)),
+      y: Math.max(55, Math.min(H - 55, cy + Math.sin(angle) * r)),
+      vx: 0, vy: 0,
+    };
+  });
+
+  // Mini force simulation — 60 iterations
+  for (let iter = 0; iter < 60; iter++) {
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[j].x - nodes[i].x;
+        const dy = nodes[j].y - nodes[i].y;
+        const d2 = dx * dx + dy * dy || 1;
+        if (d2 < 85 * 85) {
+          const d = Math.sqrt(d2);
+          const f = 2000 / d2;
+          nodes[i].vx -= (dx / d) * f;  nodes[i].vy -= (dy / d) * f;
+          nodes[j].vx += (dx / d) * f;  nodes[j].vy += (dy / d) * f;
+        }
+      }
+    }
+    nodes.forEach(n => {
+      n.vx += (n.cx - n.x) * 0.055;
+      n.vy += (n.cy - n.y) * 0.055;
+      n.x = Math.max(55, Math.min(W - 55, n.x + n.vx));
+      n.y = Math.max(55, Math.min(H - 55, n.y + n.vy));
+      n.vx *= 0.52; n.vy *= 0.52;
+    });
+  }
+
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("class", "graph-svg");
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Research constellation — papers as nodes, edges connect shared topics");
+
+  // Cluster area labels (faint background)
+  const labG = document.createElementNS(ns, "g");
+  Object.entries(CLUSTERS).forEach(([tag, c]) => {
+    const t = document.createElementNS(ns, "text");
+    t.setAttribute("x", c.x); t.setAttribute("y", c.y - 48);
+    t.setAttribute("class", "graph-cluster-label");
+    t.textContent = CLUSTER_LABELS[tag] || tag;
+    labG.appendChild(t);
+  });
+  svg.appendChild(labG);
+
+  // Edges
+  const edgeG = document.createElementNS(ns, "g");
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const shared = nodes[i].item.tags.filter(t => nodes[j].item.tags.includes(t));
+      if (!shared.length) continue;
+      const line = document.createElementNS(ns, "line");
+      line.setAttribute("x1", Math.round(nodes[i].x)); line.setAttribute("y1", Math.round(nodes[i].y));
+      line.setAttribute("x2", Math.round(nodes[j].x)); line.setAttribute("y2", Math.round(nodes[j].y));
+      line.setAttribute("class", "graph-edge");
+      line.setAttribute("stroke-opacity", Math.min(0.4, shared.length * 0.2));
+      edgeG.appendChild(line);
+    }
+  }
+  svg.appendChild(edgeG);
+
+  // Nodes
+  nodes.forEach(n => {
+    const isFeatured = n.item.venue === "featured";
+    const isPoster  = RESEARCH_POSTERS.some(p => p.id === n.item.id);
+    const primaryTag = n.item.tags[0] || "ml";
+    const r = isFeatured ? 14 : isPoster ? 9 : 11;
+
+    const g = document.createElementNS(ns, "g");
+    g.setAttribute("class", `graph-node graph-node--${primaryTag}${isFeatured ? " graph-node--featured" : ""}`);
+    g.setAttribute("transform", `translate(${Math.round(n.x)},${Math.round(n.y)})`);
+    g.setAttribute("tabindex", "0");
+    g.setAttribute("role", "button");
+    g.setAttribute("aria-label", n.item.title);
+
+    if (isFeatured) {
+      const ring = document.createElementNS(ns, "circle");
+      ring.setAttribute("r", r + 6);
+      ring.setAttribute("class", "graph-node-ring");
+      g.appendChild(ring);
+    }
+
+    const circle = document.createElementNS(ns, "circle");
+    circle.setAttribute("r", r);
+    circle.setAttribute("class", "graph-node-circle");
+    g.appendChild(circle);
+
+    const words = n.item.title.split(" ");
+    const label = document.createElementNS(ns, "text");
+    label.setAttribute("class", "graph-node-label");
+    label.setAttribute("y", r + 13);
+    label.setAttribute("text-anchor", "middle");
+    label.textContent = words.slice(0, 3).join(" ") + (words.length > 3 ? "…" : "");
+    g.appendChild(label);
+
+    g.addEventListener("mouseenter", (e) => { g.classList.add("graph-node--hovered"); showGraphTooltip(n.item, e); });
+    g.addEventListener("mousemove", positionGraphTooltip);
+    g.addEventListener("mouseleave", () => { g.classList.remove("graph-node--hovered"); hideGraphTooltip(); });
+    g.addEventListener("click", () => { if (n.item.url) window.open(n.item.url, "_blank", "noopener,noreferrer"); });
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" && n.item.url) window.open(n.item.url, "_blank", "noopener,noreferrer"); });
+
+    svg.appendChild(g);
+  });
+
+  // Legend
+  const legG = document.createElementNS(ns, "g");
+  legG.setAttribute("transform", "translate(14,14)");
+  [
+    { cls: "graph-node--ml",        label: "ML / CS" },
+    { cls: "graph-node--math",      label: "Math" },
+    { cls: "graph-node--rl",        label: "RL" },
+    { cls: "graph-node--bio",       label: "Biology" },
+    { cls: "graph-node--aerospace", label: "Aerospace" },
+    { cls: "graph-node--security",  label: "Security" },
+  ].forEach(({ cls, label }, i) => {
+    const row = document.createElementNS(ns, "g");
+    row.setAttribute("transform", `translate(0,${i * 18})`);
+    const c = document.createElementNS(ns, "circle");
+    c.setAttribute("r", 5); c.setAttribute("cx", 6); c.setAttribute("cy", 6);
+    c.setAttribute("class", `graph-node-circle graph-node ${cls}`);
+    row.appendChild(c);
+    const t = document.createElementNS(ns, "text");
+    t.setAttribute("x", 16); t.setAttribute("y", 10);
+    t.setAttribute("class", "graph-legend-label");
+    t.textContent = label;
+    row.appendChild(t);
+    legG.appendChild(row);
+  });
+  svg.appendChild(legG);
+
+  graphDiv.appendChild(svg);
+}
+
+// ---------- Timeline view ----------
+function renderTimelineView() {
+  const timelineDiv = document.getElementById("timeline-view");
+  timelineDiv.innerHTML = "";
+
+  const ALL = [...PUBLISHED, ...RESEARCH_POSTERS];
+  ALL.sort((a, b) => getItemDate(b).localeCompare(getItemDate(a)));
+
+  const byYear = ALL.reduce((acc, item) => {
+    const y = getItemDate(item).slice(0, 4);
+    (acc[y] = acc[y] || []).push(item);
+    return acc;
+  }, {});
+
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const track = document.createElement("div");
+  track.className = "timeline-track";
+
+  Object.keys(byYear).sort().reverse().forEach(year => {
+    const section = document.createElement("div");
+    section.className = "timeline-year-section";
+
+    const yearLabel = document.createElement("span");
+    yearLabel.className = "timeline-year-label";
+    yearLabel.textContent = year;
+    section.appendChild(yearLabel);
+
+    const cards = document.createElement("div");
+    cards.className = "timeline-cards";
+
+    byYear[year].forEach(item => {
+      const monthIdx = parseInt(getItemDate(item).slice(5, 7)) - 1;
+      const isFeatured = item.venue === "featured";
+      const badge = item.badgeLabel || item.impact || "";
+      const badgeCls = isFeatured ? "pub-card__badge--featured" : "pub-card__badge--arxiv";
+
+      const card = document.createElement("div");
+      card.className = `timeline-card${isFeatured ? " timeline-card--featured" : ""}`;
+      card.innerHTML = `
+        <div class="timeline-card__month">${MONTHS[monthIdx] || ""}</div>
+        ${badge ? `<div class="timeline-card__badge ${badgeCls}">${escapeHtml(badge)}</div>` : ""}
+        <h4 class="timeline-card__title">${escapeHtml(item.title)}</h4>
+        <div class="timeline-card__tags">${item.tags.slice(0, 3).map(t => `<span class="pub-card__tag ${tagClass(t)}">${escapeHtml(t.toUpperCase())}</span>`).join("")}</div>
+        ${item.url ? `<a href="${escapeAttr(item.url)}" target="_blank" rel="noopener noreferrer" class="timeline-card__link">View →</a>` : ""}
+      `;
+      cards.appendChild(card);
+    });
+
+    section.appendChild(cards);
+    track.appendChild(section);
+  });
+
+  timelineDiv.appendChild(track);
 }
 
 // ---------- Card tilt (optional, subtle) ----------
@@ -561,8 +873,20 @@ function initScrollReveal() {
   document.querySelectorAll(".section").forEach((s) => observer.observe(s));
 }
 
+// ---------- View toggle ----------
+document.querySelectorAll(".view-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("view-btn--active"));
+    btn.classList.add("view-btn--active");
+    activeView = btn.dataset.view;
+    render();
+    if (activeView === "list") initCardTilt();
+  });
+});
+
 // ---------- Init ----------
 render();
 initCardTilt();
 initScrollReveal();
 initStatCounters();
+initReadingProgress();
