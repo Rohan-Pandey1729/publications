@@ -5,6 +5,18 @@
 
 const PUBLISHED = [
   {
+    id: "demons-on-a-budget",
+    title: "Demons on a Budget: Adaptive Measurement Placement at the Entanglement Phase Transition",
+    meta: "arXiv:2608.19248 — quant-ph, cond-mat.stat-mech, cs.LG",
+    desc: "Fixes the measurement budget in brickwork random Clifford circuits and varies the placement process instead of the measurement rate. A deterministic contiguous sweep cuts half-cut entropy by a factor of 3.4 versus random placement, and the effect is carried by spatial order alone (4.14±0.06 bits with random tie-breaking vs. 1.29±0.04 bits with position-ordered tie-breaking). The sweep eliminates the transition rather than shifting it: tripartite mutual information crossings recede as p∗∝1/L and data for 64≤L≤512 collapse onto S=p−1f(pL). Policies trained by cross-entropy and PPO fail to find the sweep, since score-based parameterizations control which sites are measured, not the order in which degenerate scores are resolved.",
+    url: "https://arxiv.org/abs/2608.19248",
+    linkLabel: "View on arXiv",
+    tags: ["quantum", "ml", "rl"],
+    venue: "arxiv",
+    area: "Quantum Information",
+    impact: "arXiv preprint",
+  },
+  {
     id: "factorlibrary",
     title: "FactorLibrary: From Polynomials to Circuits via Recursive Subgoals",
     meta: "ICML 2026 — 3rd AI for Math Workshop",
@@ -224,7 +236,7 @@ const RESEARCH_POSTERS = [
   },
 ];
 
-const AREA_ORDER = ["ML / Security", "RL / Multi-Agent Systems", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
+const AREA_ORDER = ["ML / Security", "RL / Multi-Agent Systems", "Quantum Information", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
 
 // ---------- DOM refs ----------
 const searchInput = document.getElementById("search");
@@ -285,6 +297,7 @@ function matchesCategory(item, category) {
   if (category === "math") return item.tags.includes("math");
   if (category === "ml") return item.tags.includes("ml");
   if (category === "rl") return item.tags.includes("rl");
+  if (category === "quantum") return item.tags.includes("quantum");
   if (category === "aerospace") return item.tags.includes("aerospace");
   if (category === "bio") return item.tags.includes("bio");
   return true;
@@ -294,6 +307,7 @@ function tagClass(tag) {
   if (tag === "math") return "pub-card__tag--math";
   if (tag === "ml") return "pub-card__tag--ml";
   if (tag === "rl") return "pub-card__tag--rl";
+  if (tag === "quantum") return "pub-card__tag--quantum";
   if (tag === "aerospace") return "pub-card__tag--aerospace";
   if (tag === "bio") return "pub-card__tag--bio";
   return "";

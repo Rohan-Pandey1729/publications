@@ -499,6 +499,7 @@ body::before {
 .pub-card__tag--math { background: var(--teal-soft); color: var(--teal); }
 .pub-card__tag--ml { background: var(--accent-soft); color: var(--accent-strong); }
 .pub-card__tag--rl { background: var(--gold-soft); color: #845608; }
+.pub-card__tag--quantum { background: #efe8fb; color: #6b41c0; }
 .pub-card__tag--aerospace { background: #edf5e4; color: #557b1f; }
 .pub-card__tag--bio { background: var(--green-soft); color: var(--green); }
 
@@ -709,6 +710,7 @@ body::before {
 .pub-card--spotlight .pub-card__tag--math  { background: rgba(8, 121, 135, 0.28); color: #62dae9; }
 .pub-card--spotlight .pub-card__tag--ml    { background: rgba(36, 87, 214, 0.28); color: #82acf7; }
 .pub-card--spotlight .pub-card__tag--rl    { background: rgba(184, 121, 19, 0.28); color: #e8a832; }
+.pub-card--spotlight .pub-card__tag--quantum { background: rgba(107, 65, 192, 0.28); color: #b795f2; }
 .pub-card--spotlight .pub-card__tag--aerospace { background: rgba(85, 123, 31, 0.28); color: #8ec44a; }
 .pub-card--spotlight .pub-card__tag--bio   { background: rgba(22, 122, 74, 0.28); color: #52d490; }
 
