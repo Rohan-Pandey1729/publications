@@ -5,6 +5,18 @@
 
 const PUBLISHED = [
   {
+    id: "refutation-gap",
+    title: "The Refutation Gap: Certifying Both Halves of an Optimality Claim",
+    meta: "arXiv:2609.20873 — cs.LO, cs.LG",
+    desc: "Optimality claims from synthesis pipelines have two halves: the upper bound is witnessed by a re-executable program, while the lower bound (no smaller program exists) usually rests on an uncertified solver UNSAT. Closes this refutation gap for minimal linear straight-line programs over GF(2): every decisive UNSAT answer emits a DRAT proof checked by an independent third-party checker. Certifies all 121 optimality results for n = 6 to 9 (111 by verified refutations, 10 by a counting bound), with a median proof of 1.1 MB and checking at 1.9x solving cost, plus five case studies where verification caught defects that code review missed.",
+    url: "https://arxiv.org/abs/2609.20873",
+    linkLabel: "View on arXiv",
+    tags: ["math", "ml"],
+    venue: "arxiv",
+    area: "Formal Verification",
+    impact: "arXiv preprint",
+  },
+  {
     id: "demons-on-a-budget",
     title: "Demons on a Budget: Adaptive Measurement Placement at the Entanglement Phase Transition",
     meta: "arXiv:2608.19248 — quant-ph, cond-mat.stat-mech, cs.LG",
@@ -236,7 +248,7 @@ const RESEARCH_POSTERS = [
   },
 ];
 
-const AREA_ORDER = ["ML / Security", "RL / Multi-Agent Systems", "Quantum Information", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
+const AREA_ORDER = ["ML / Security", "RL / Multi-Agent Systems", "Quantum Information", "Formal Verification", "Mathematics", "Aerospace / Simulation", "Computational Biology", "Muscle Biology"];
 
 // ---------- DOM refs ----------
 const searchInput = document.getElementById("search");
@@ -573,173 +585,237 @@ function hideGraphTooltip() {
 }
 
 // ---------- Constellation view ----------
+// Each paper orbits one primary topic hub; hubs sit in two central columns and
+// their papers stack outward so every label gets its own row. Secondary topics
+// are drawn as faint links that light up when a star or hub is hovered.
+const GRAPH_TOPICS = [
+  { tag: "ml",        label: "ML / CS" },
+  { tag: "rl",        label: "Reinforcement Learning" },
+  { tag: "math",      label: "Mathematics" },
+  { tag: "security",  label: "Security" },
+  { tag: "bio",       label: "Biology" },
+  { tag: "quantum",   label: "Quantum" },
+  { tag: "aerospace", label: "Aerospace" },
+];
+
+// Most specific tag wins when a paper carries several.
+const PRIMARY_TOPIC_ORDER = ["quantum", "security", "aerospace", "bio", "rl", "math", "ml"];
+
+function primaryTopic(item) {
+  return PRIMARY_TOPIC_ORDER.find((t) => item.tags.includes(t)) || "ml";
+}
+
+function shortTitle(title) {
+  const head = title.split(":")[0].trim();
+  if (head.length <= 44) return head;
+  return head.slice(0, 43).replace(/\s+\S*$/, "") + "…";
+}
+
 function renderGraphView() {
   const graphDiv = document.getElementById("graph-view");
-  graphDiv.innerHTML = '<div class="graph-header">Hover to preview · Click to open</div>';
+  graphDiv.innerHTML = "";
 
-  const W = 1000, H = 600;
   const ALL = [...PUBLISHED, ...RESEARCH_POSTERS];
+  const isVisible = (item) => matchesSearch(item) && matchesCategory(item, activeFilter);
+  const visibleCount = ALL.filter(isVisible).length;
 
-  const CLUSTERS = {
-    ml:        { x: 245, y: 290 },
-    math:      { x: 740, y: 155 },
-    rl:        { x: 500, y: 115 },
-    bio:       { x: 800, y: 475 },
-    aerospace: { x: 920, y: 305 },
-    security:  { x: 105, y: 430 },
-  };
+  const W = 1100;
+  const TOP = 40, ROW = 28, HEADING = 26, GAP = 30;
+  const HUB_X = { left: 480, right: 620 };
+  const STAR_X = { left: 330, right: 770 };
 
-  const CLUSTER_LABELS = {
-    ml: "ML / CS", math: "Mathematics", rl: "RL",
-    bio: "Biology", aerospace: "Aerospace", security: "Security",
-  };
-
-  // Initial positions based on tag cluster centroids + golden-angle jitter
-  const nodes = ALL.map((item, i) => {
-    const cTags = item.tags.filter(t => CLUSTERS[t]);
-    let cx = W / 2, cy = H / 2;
-    if (cTags.length) {
-      cx = cTags.reduce((s, t) => s + CLUSTERS[t].x, 0) / cTags.length;
-      cy = cTags.reduce((s, t) => s + CLUSTERS[t].y, 0) / cTags.length;
-    }
-    const angle = i * 2.399;
-    const r = 60 + (i % 5) * 26;
-    return {
-      item, cx, cy,
-      x: Math.max(60, Math.min(W - 60, cx + Math.cos(angle) * r)),
-      y: Math.max(60, Math.min(H - 60, cy + Math.sin(angle) * r)),
-      vx: 0, vy: 0,
-    };
+  // Group papers under their primary topic and balance topics across the two sides.
+  const groups = GRAPH_TOPICS
+    .map((t) => ({ ...t, items: ALL.filter((item) => primaryTopic(item) === t.tag) }))
+    .filter((g) => g.items.length);
+  const height = { left: 0, right: 0 };
+  groups.forEach((g) => {
+    g.side = height.left <= height.right ? "left" : "right";
+    height[g.side] += HEADING + g.items.length * ROW + GAP;
   });
+  const H = Math.max(height.left, height.right) - GAP + TOP * 2;
 
-  // Mini force simulation — 80 iterations
-  for (let iter = 0; iter < 80; iter++) {
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[j].x - nodes[i].x;
-        const dy = nodes[j].y - nodes[i].y;
-        const d2 = dx * dx + dy * dy || 1;
-        if (d2 < 110 * 110) {
-          const d = Math.sqrt(d2);
-          const f = 3500 / d2;
-          nodes[i].vx -= (dx / d) * f;  nodes[i].vy -= (dy / d) * f;
-          nodes[j].vx += (dx / d) * f;  nodes[j].vy += (dy / d) * f;
-        }
-      }
-    }
-    nodes.forEach(n => {
-      n.vx += (n.cx - n.x) * 0.038;
-      n.vy += (n.cy - n.y) * 0.038;
-      n.x = Math.max(60, Math.min(W - 60, n.x + n.vx));
-      n.y = Math.max(60, Math.min(H - 60, n.y + n.vy));
-      n.vx *= 0.48; n.vy *= 0.48;
+  // Positions
+  const cursor = { left: TOP, right: TOP };
+  const stars = [];
+  const hubs = {};
+  groups.forEach((g) => {
+    const dir = g.side === "left" ? -1 : 1;
+    const headingY = cursor[g.side] + 12;
+    const firstY = cursor[g.side] + HEADING + ROW / 2;
+    g.items.forEach((item, i) => {
+      stars.push({ item, group: g, dir, x: STAR_X[g.side], y: firstY + i * ROW });
     });
-  }
+    const ys = stars.filter((s) => s.group === g).map((s) => s.y);
+    hubs[g.tag] = {
+      group: g, dir,
+      x: HUB_X[g.side],
+      y: ys.reduce((a, b) => a + b, 0) / ys.length,
+      headingX: STAR_X[g.side] - dir * 6,
+      headingY,
+    };
+    cursor[g.side] += HEADING + g.items.length * ROW + GAP;
+  });
+  // Bow each stack gently toward its hub so groups read as arcs
+  stars.forEach((s) => { s.x -= s.dir * 3 * Math.pow((s.y - hubs[s.group.tag].y) / ROW, 2); });
 
   const ns = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(ns, "svg");
-  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.setAttribute("class", "graph-svg");
-  svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Research constellation — papers as nodes, edges connect shared topics");
+  const el = (tag, attrs = {}) => {
+    const node = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+    return node;
+  };
+  const curve = (x1, y1, x2, y2) => {
+    const mx = (x1 + x2) / 2;
+    return `M${x1.toFixed(1)},${y1.toFixed(1)} C${mx.toFixed(1)},${y1.toFixed(1)} ${mx.toFixed(1)},${y2.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}`;
+  };
 
-  // Cluster area labels (faint background)
-  const labG = document.createElementNS(ns, "g");
-  Object.entries(CLUSTERS).forEach(([tag, c]) => {
-    const t = document.createElementNS(ns, "text");
-    t.setAttribute("x", c.x); t.setAttribute("y", c.y - 48);
-    t.setAttribute("class", "graph-cluster-label");
-    t.textContent = CLUSTER_LABELS[tag] || tag;
-    labG.appendChild(t);
+  const header = document.createElement("div");
+  header.className = "graph-header";
+  header.innerHTML = `
+    <span class="graph-header__title">Research constellation</span>
+    <span class="graph-header__hint">${visibleCount} of ${ALL.length} shown · hover a star to trace its topics · click to open</span>
+  `;
+  graphDiv.appendChild(header);
+
+  const scroller = document.createElement("div");
+  scroller.className = "graph-scroll";
+  const svg = el("svg", {
+    viewBox: `0 0 ${W} ${H}`,
+    class: "graph-svg",
+    role: "group",
+    "aria-label": "Research constellation: papers grouped around topic hubs",
   });
-  svg.appendChild(labG);
 
-  // Edges
-  const edgeG = document.createElementNS(ns, "g");
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const shared = nodes[i].item.tags.filter(t => nodes[j].item.tags.includes(t));
-      if (!shared.length) continue;
-      const line = document.createElementNS(ns, "line");
-      line.setAttribute("x1", Math.round(nodes[i].x)); line.setAttribute("y1", Math.round(nodes[i].y));
-      line.setAttribute("x2", Math.round(nodes[j].x)); line.setAttribute("y2", Math.round(nodes[j].y));
-      line.setAttribute("class", "graph-edge");
-      line.setAttribute("stroke-opacity", Math.min(0.4, shared.length * 0.2));
-      edgeG.appendChild(line);
-    }
+  // Faint starfield (seeded so it doesn't jump between renders)
+  const sky = el("g", { class: "graph-sky", "aria-hidden": "true" });
+  let seed = 11;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 90; i++) {
+    sky.appendChild(el("circle", { cx: (rand() * W).toFixed(1), cy: (rand() * H).toFixed(1), r: (0.4 + rand() * 0.9).toFixed(2), opacity: (0.15 + rand() * 0.35).toFixed(2) }));
   }
-  svg.appendChild(edgeG);
+  svg.appendChild(sky);
 
-  // Nodes
-  nodes.forEach(n => {
-    const isFeatured = n.item.venue === "featured";
-    const isPoster  = RESEARCH_POSTERS.some(p => p.id === n.item.id);
-    const primaryTag = n.item.tags[0] || "ml";
-    const r = isFeatured ? 14 : isPoster ? 9 : 11;
+  // Links: primary (star → own hub) and secondary (star → other topic hubs)
+  const linkG = el("g", { class: "graph-links", "aria-hidden": "true" });
+  const links = [];
+  stars.forEach((s) => {
+    s.item.tags.forEach((tag) => {
+      const hub = hubs[tag];
+      if (!hub) return;
+      const primary = tag === s.group.tag;
+      const path = el("path", {
+        d: primary ? curve(hub.x, hub.y, s.x, s.y) : curve(s.x, s.y, hub.x, hub.y),
+        class: `graph-link t-${tag} ${primary ? "graph-link--primary" : "graph-link--secondary"}${isVisible(s.item) ? "" : " is-muted"}`,
+      });
+      linkG.appendChild(path);
+      links.push({ el: path, id: s.item.id, tag });
+    });
+  });
+  svg.appendChild(linkG);
 
-    const g = document.createElementNS(ns, "g");
-    g.setAttribute("class", `graph-node graph-node--${primaryTag}${isFeatured ? " graph-node--featured" : ""}`);
-    g.setAttribute("transform", `translate(${Math.round(n.x)},${Math.round(n.y)})`);
-    g.setAttribute("tabindex", "0");
-    g.setAttribute("role", "button");
-    g.setAttribute("aria-label", n.item.title);
+  // Focus handling
+  const starEls = {};
+  const hubEls = {};
+  const setFocus = (ids, tags) => {
+    svg.classList.add("has-focus");
+    links.forEach((l) => l.el.classList.toggle("is-active", ids.has(l.id) && tags.has(l.tag)));
+    Object.entries(starEls).forEach(([id, g]) => g.classList.toggle("is-active", ids.has(id)));
+    Object.entries(hubEls).forEach(([tag, els]) => els.forEach((e) => e.classList.toggle("is-active", tags.has(tag))));
+  };
+  const clearFocus = () => {
+    svg.classList.remove("has-focus");
+    svg.querySelectorAll(".is-active").forEach((n) => n.classList.remove("is-active"));
+    hideGraphTooltip();
+  };
+  const focusHub = (tag) => {
+    const ids = new Set(stars.filter((s) => s.item.tags.includes(tag)).map((s) => s.item.id));
+    setFocus(ids, new Set([tag]));
+  };
+  const openItem = (item) => { if (item.url) window.open(item.url, "_blank", "noopener,noreferrer"); };
+  const bindHover = (node, onEnter, extra = {}) => {
+    node.addEventListener("mouseenter", onEnter);
+    node.addEventListener("focus", onEnter);
+    node.addEventListener("mouseleave", clearFocus);
+    node.addEventListener("blur", clearFocus);
+    if (extra.move) node.addEventListener("mousemove", extra.move);
+  };
 
-    if (isFeatured) {
-      const ring = document.createElementNS(ns, "circle");
-      ring.setAttribute("r", r + 6);
-      ring.setAttribute("class", "graph-node-ring");
-      g.appendChild(ring);
-    }
+  // Hubs + headings
+  Object.entries(hubs).forEach(([tag, hub]) => {
+    const g = hub.group;
+    const hubG = el("g", { class: `graph-hub t-${tag}`, transform: `translate(${hub.x},${hub.y.toFixed(1)})`, "aria-hidden": "true" });
+    hubG.appendChild(el("circle", { r: 20, class: "graph-hub__halo" }));
+    hubG.appendChild(el("circle", { r: 7.5, class: "graph-hub__core" }));
+    svg.appendChild(hubG);
 
-    const circle = document.createElementNS(ns, "circle");
-    circle.setAttribute("r", r);
-    circle.setAttribute("class", "graph-node-circle");
-    g.appendChild(circle);
+    const heading = el("text", {
+      x: hub.headingX, y: hub.headingY,
+      class: `graph-heading t-${tag}`,
+      "text-anchor": g.side === "left" ? "end" : "start",
+    });
+    heading.textContent = `${g.label}  ·  ${g.items.length}`;
+    svg.appendChild(heading);
 
-    const words = n.item.title.split(" ");
-    const label = document.createElementNS(ns, "text");
-    label.setAttribute("class", "graph-node-label");
-    label.setAttribute("y", r + 13);
-    label.setAttribute("text-anchor", "middle");
-    label.textContent = words.slice(0, 3).join(" ") + (words.length > 3 ? "…" : "");
+    hubEls[tag] = [hubG, heading];
+    bindHover(hubG, () => focusHub(tag));
+    bindHover(heading, () => focusHub(tag));
+    hubG.style.pointerEvents = "all";
+  });
+
+  // Stars
+  stars.forEach((s) => {
+    const item = s.item;
+    const isFeatured = item.venue === "featured";
+    const isPoster = RESEARCH_POSTERS.some((p) => p.id === item.id);
+    const g = el("g", {
+      class: `graph-star t-${s.group.tag}${isFeatured ? " graph-star--featured" : ""}${isPoster ? " graph-star--poster" : ""}${isVisible(item) ? "" : " is-muted"}`,
+      transform: `translate(${s.x.toFixed(1)},${s.y.toFixed(1)})`,
+      tabindex: "0",
+      role: "link",
+      "aria-label": `${item.title} (${item.badgeLabel || item.impact || ""})`,
+    });
+    // Wide invisible hit area covering the star and its label
+    g.appendChild(el("rect", { x: s.dir < 0 ? -262 : -12, y: -12, width: 274, height: 24, class: "graph-star__hit" }));
+    if (isFeatured) g.appendChild(el("circle", { r: 11, class: "graph-star__ring" }));
+    g.appendChild(el("circle", { r: isFeatured ? 6.5 : 5, class: "graph-star__core" }));
+    const label = el("text", {
+      x: s.dir * 14, y: 4.2,
+      class: "graph-star__label",
+      "text-anchor": s.dir < 0 ? "end" : "start",
+    });
+    label.textContent = shortTitle(item.title);
     g.appendChild(label);
 
-    g.addEventListener("mouseenter", (e) => { g.classList.add("graph-node--hovered"); showGraphTooltip(n.item, e); });
-    g.addEventListener("mousemove", positionGraphTooltip);
-    g.addEventListener("mouseleave", () => { g.classList.remove("graph-node--hovered"); hideGraphTooltip(); });
-    g.addEventListener("click", () => { if (n.item.url) window.open(n.item.url, "_blank", "noopener,noreferrer"); });
-    g.addEventListener("keydown", (e) => { if (e.key === "Enter" && n.item.url) window.open(n.item.url, "_blank", "noopener,noreferrer"); });
+    const enter = (e) => {
+      setFocus(new Set([item.id]), new Set(item.tags));
+      if (e.type === "focus") {
+        const r = g.getBoundingClientRect();
+        showGraphTooltip(item, { clientX: r.right, clientY: r.top });
+      } else {
+        showGraphTooltip(item, e);
+      }
+    };
+    bindHover(g, enter, { move: positionGraphTooltip });
+    g.addEventListener("click", () => openItem(item));
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter") openItem(item); });
 
+    starEls[item.id] = g;
     svg.appendChild(g);
   });
 
-  // Legend
-  const legG = document.createElementNS(ns, "g");
-  legG.setAttribute("transform", "translate(14,14)");
-  [
-    { cls: "graph-node--ml",        label: "ML / CS" },
-    { cls: "graph-node--math",      label: "Math" },
-    { cls: "graph-node--rl",        label: "RL" },
-    { cls: "graph-node--bio",       label: "Biology" },
-    { cls: "graph-node--aerospace", label: "Aerospace" },
-    { cls: "graph-node--security",  label: "Security" },
-  ].forEach(({ cls, label }, i) => {
-    const row = document.createElementNS(ns, "g");
-    row.setAttribute("transform", `translate(0,${i * 18})`);
-    const c = document.createElementNS(ns, "circle");
-    c.setAttribute("r", 5); c.setAttribute("cx", 6); c.setAttribute("cy", 6);
-    c.setAttribute("class", `graph-node-circle graph-node ${cls}`);
-    row.appendChild(c);
-    const t = document.createElementNS(ns, "text");
-    t.setAttribute("x", 16); t.setAttribute("y", 10);
-    t.setAttribute("class", "graph-legend-label");
-    t.textContent = label;
-    row.appendChild(t);
-    legG.appendChild(row);
-  });
-  svg.appendChild(legG);
+  scroller.appendChild(svg);
+  graphDiv.appendChild(scroller);
 
-  graphDiv.appendChild(svg);
+  const legend = document.createElement("div");
+  legend.className = "graph-legend";
+  legend.innerHTML = `
+    <span class="graph-legend__item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" class="graph-legend__dot"/></svg>Preprint</span>
+    <span class="graph-legend__item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" class="graph-legend__ring"/><circle cx="12" cy="12" r="6" class="graph-legend__dot"/></svg>Conference paper</span>
+    <span class="graph-legend__item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" class="graph-legend__hollow"/></svg>Research poster</span>
+    <span class="graph-legend__item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12 H22" class="graph-legend__dash"/></svg>Also relates to topic</span>
+  `;
+  graphDiv.appendChild(legend);
 }
 
 // ---------- Timeline view ----------
@@ -898,7 +974,39 @@ document.querySelectorAll(".view-btn").forEach(btn => {
   });
 });
 
+// ---------- Theme toggle ----------
+function initThemeToggle() {
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  const root = document.documentElement;
+  const label = btn.querySelector(".theme-toggle__label");
+  const sync = () => {
+    const dark = root.getAttribute("data-theme") === "dark";
+    btn.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+    label.textContent = dark ? "Light" : "Dark";
+  };
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+    sync();
+  });
+  // Follow the OS setting until the visitor picks a theme explicitly
+  const media = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+  if (media && media.addEventListener) {
+    media.addEventListener("change", (e) => {
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (err) {}
+      if (saved) return;
+      root.setAttribute("data-theme", e.matches ? "dark" : "light");
+      sync();
+    });
+  }
+  sync();
+}
+
 // ---------- Init ----------
+initThemeToggle();
 render();
 initCardTilt();
 initScrollReveal();
