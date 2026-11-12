@@ -5,6 +5,20 @@
 
 const PUBLISHED = [
   {
+    id: "wrong-the-same-way",
+    title: "Wrong the Same Way: Cross-Prompt Sharing Both Suppresses and Amplifies Reward Hacking in RLVR",
+    meta: "NeurIPS 2026 — Pre-to-Post Workshop",
+    date: "2026-10",
+    desc: "Asks whether RLVR with an imperfect verifier inherits reward hacking from the base model or amplifies it, in a controlled environment small enough to compute the full response distribution exactly. At its KL-regularized optimum RLVR acts as a filter, so the hack rate is inherited exactly. With parameter sharing, every prompt that accepts a wrong answer pushes it up and every prompt that rejects it pushes it down through the baseline, so a shared policy suppresses leaks that few prompts accept and amplifies leaks that most prompts accept; independent per-prompt copies remove the effect. Verifier fixes should target mistakes the model repeats across prompts: two patches that remove equally many errors differ by up to 38 points of true accuracy.",
+    url: "https://openreview.net/forum?id=A9zExL5cqH",
+    linkLabel: "View on OpenReview",
+    tags: ["ml", "rl"],
+    venue: "featured",
+    area: "RL / Post-Training",
+    impact: "NeurIPS workshop paper",
+    badgeLabel: "NeurIPS Workshop",
+  },
+  {
     id: "refutation-gap",
     title: "The Refutation Gap: Certifying Both Halves of an Optimality Claim",
     meta: "arXiv:2609.20873 — cs.LO, cs.LG",

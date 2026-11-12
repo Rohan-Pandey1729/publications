@@ -4,7 +4,7 @@ A focused, interactive site showcasing **published papers** and **in-progress re
 
 ## Features
 
-- **Published** — 11 papers with links and short descriptions
+- **Published** — 17 papers (4 NeurIPS / ICML / ICLR workshop papers, 13 preprints) with links and short descriptions
 - **In progress & reports** — cancer modeling, backdoor research, TD-MPC2
 - **Search** — by title or topic
 - **Filters** — All / Published / In progress / Math / ML / Biology
